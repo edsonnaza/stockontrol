@@ -15,8 +15,5 @@ php artisan config:cache
 php artisan migrate --force
 php artisan db:seed --force
 
-# Iniciar PHP-FPM en background
-php-fpm -D
-
-# Iniciar Nginx en foreground
-nginx -c /var/www/html/nginx.conf -g 'daemon off;'
+# Iniciar la app con artisan serve (compatible con Nixpacks)
+php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
