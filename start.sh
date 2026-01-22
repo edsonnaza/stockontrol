@@ -25,19 +25,24 @@ while [ $attempt -le $max_attempts ]; do
     attempt=$((attempt + 1))
 done
 
-# Set APP_URL if not already set (Railway will provide RAILWAY_PUBLIC_DOMAIN)
-if [ -z "$APP_URL" ] || [ "$APP_URL" = "" ]; then
-    if [ ! -z "$RAILWAY_PUBLIC_DOMAIN" ]; then
-        export APP_URL="https://${RAILWAY_PUBLIC_DOMAIN}"
-        sed -i "" "s|^APP_URL=.*|APP_URL=https://${RAILWAY_PUBLIC_DOMAIN}|" .env
-    fi
+# Set APP_URL and ASSET_URL if Railway public domain is available
+if [ ! -z "$RAILWAY_PUBLIC_DOMAIN" ]; then
+    export APP_URL="https://${RAILWAY_PUBLIC_DOMAIN}"
+    export ASSET_URL="https://${RAILWAY_PUBLIC_DOMAIN}"
+    
+    # Update .env file with HTTPS URLs
+    sed -i "s|^APP_URL=.*|APP_URL=https://${RAILWAY_PUBLIC_DOMAIN}|" .env
+    sed -i "s|^ASSET_URL=.*|ASSET_URL=https://${RAILWAY_PUBLIC_DOMAIN}|" .env
+    
+    echo "APP_URL set to: $APP_URL"
 fi
 
 # Generate app key if needed
 php artisan key:generate --force 2>/dev/null || true
 
-# Clear any cached config
+# Clear any cached config and cache
 php artisan config:clear 2>/dev/null || true
+php artisan cache:clear 2>/dev/null || true
 
 # Run migrations
 echo "Running database migrations..."
@@ -46,6 +51,11 @@ php artisan migrate --force 2>&1 || echo "Migration warning - continuing..."
 # Seed database
 echo "Seeding database..."
 php artisan db:seed 2>&1 || echo "Seed warning - continuing..."
+
+# Cache config for production
+if [ "$APP_ENV" = "production" ]; then
+    php artisan config:cache 2>/dev/null || true
+fi
 
 # Start the application
 echo "Starting application on port ${PORT:-8000}..."
