@@ -7,8 +7,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 RUN apt-get update && apt-get install -y \
     git \
     curl \
-    netcat-openbsd \
-    mariadb-client-compat \
     nodejs \
     libpng-dev \
     libjpeg-dev \
@@ -19,9 +17,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    sqlite3 \
-    libsqlite3-dev \
-    && docker-php-ext-install pdo pdo_mysql pdo_sqlite
+    && docker-php-ext-install pdo pdo_mysql
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -40,6 +36,3 @@ RUN composer install --optimize-autoloader --no-scripts --no-interaction --ignor
 
 # Build assets
 RUN npm ci && npm run build
-
-# Run migrations
-CMD ["./start.sh"]
