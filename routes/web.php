@@ -7,10 +7,14 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HealthController;
 
 Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
+
+// Health check endpoint (public, for deployment verification)
+Route::get('/health', [HealthController::class, 'check'])->name('health');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
