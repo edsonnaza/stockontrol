@@ -16,4 +16,4 @@ php artisan migrate --force
 php artisan db:seed --force
 
 # Iniciar la app con artisan serve (compatible con Nixpacks)
-php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
+php artisan serve --host=0.0.0.0 --port=$PORT
