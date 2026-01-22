@@ -37,11 +37,34 @@ sed -i "s|DB_PASSWORD=.*|DB_PASSWORD=$DB_PASS|" .env
 echo "Waiting for MySQL connection..."
 max_attempts=60
 attempt=1
+
+# Try using mysqladmin first, then fallback to PHP
 while [ $attempt -le $max_attempts ]; do
-    if nc -z $DB_HOST $DB_PORT 2>/dev/null; then
-        echo "MySQL is ready!"
-        break
+    # Try mysqladmin ping (most reliable)
+    if command -v mysqladmin &> /dev/null; then
+        if mysqladmin ping -h$DB_HOST -P$DB_PORT -u$DB_USER -p$DB_PASS --silent 2>/dev/null; then
+            echo "MySQL is ready (mysqladmin)!"
+            break
+        fi
+    else
+        # Fallback: try direct PHP connection
+        php -r "
+        try {
+            \$mysqli = @new mysqli('$DB_HOST', '$DB_USER', '$DB_PASS', '$DB_NAME', $DB_PORT);
+            if (\$mysqli->connect_error) {
+                exit(1);
+            }
+            \$mysqli->close();
+            exit(0);
+        } catch (Exception \$e) {
+            exit(1);
+        }
+        " 2>/dev/null && {
+            echo "MySQL is ready (PHP)!"
+            break
+        }
     fi
+    
     echo "Attempt $attempt/$max_attempts - MySQL not ready yet... ($DB_HOST:$DB_PORT)"
     sleep 2
     attempt=$((attempt + 1))
@@ -49,6 +72,11 @@ done
 
 if [ $attempt -gt $max_attempts ]; then
     echo "ERROR: Could not connect to MySQL after $max_attempts attempts"
+    echo "Database settings:"
+    echo "  Host: $DB_HOST"
+    echo "  Port: $DB_PORT"
+    echo "  Database: $DB_NAME"
+    echo "  User: $DB_USER"
     exit 1
 fi
 
