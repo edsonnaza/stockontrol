@@ -30,6 +30,9 @@ WORKDIR /app
 # Copy files
 COPY . .
 
+# Make start script executable
+RUN chmod +x start.sh
+
 # Install PHP dependencies with platform override
 RUN composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-req=php
 
@@ -37,4 +40,4 @@ RUN composer install --optimize-autoloader --no-scripts --no-interaction --ignor
 RUN npm ci && npm run build
 
 # Run migrations
-CMD php artisan migrate --force && php -S 0.0.0.0:${PORT:-8000} -t public/
+CMD ["./start.sh"]
