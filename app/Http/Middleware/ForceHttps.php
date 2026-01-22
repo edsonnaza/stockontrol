@@ -19,16 +19,16 @@ class ForceHttps
         // when behind a proxy (like Railway)
         if (env('APP_ENV') === 'production') {
             // Check if we have HTTPS indicators from proxy
-            if ($request->header('X-Forwarded-Proto') === 'https' ||
-                $request->header('X-Forwarded-Ssl') === 'on' ||
-                $request->header('CF-Visitor') ||
-                $request->isSecure()) {
-                
+            if ($request->header('X-Forwarded-Proto') === 'https') {
                 // Force the request to be recognized as HTTPS
-                if (!$request->isSecure() && $request->header('X-Forwarded-Proto') === 'https') {
-                    // Set the scheme to https for Laravel's URL generation
-                    $_SERVER['HTTPS'] = 'on';
-                    $_SERVER['SERVER_PORT'] = 443;
+                $_SERVER['HTTPS'] = 'on';
+                $_SERVER['SERVER_PORT'] = 443;
+                $_SERVER['REQUEST_SCHEME'] = 'https';
+                
+                // Notify Laravel that this is a secure connection
+                if (!$request->isSecure()) {
+                    // This ensures url() helper generates HTTPS URLs
+                    $request->server->set('HTTPS', 'on');
                 }
             }
         }
