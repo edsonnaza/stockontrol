@@ -3,6 +3,12 @@ import { ChevronLeft, Loader } from 'lucide-react';
 import type { FormEventHandler } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+    Combobox,
+    ComboboxInput,
+    ComboboxContent,
+    ComboboxItemsFiltered,
+} from '@/components/ui/combobox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -33,7 +39,7 @@ const MOTIVOS = [
 
 export default function StockMovementsExit({ products }: ExitProps) {
     const { data, setData, post, processing, errors } = useForm({
-        product_id: '',
+        product_id: 0,
         tipo: 'salida',
         cantidad: 1,
         motivo: '',
@@ -45,7 +51,7 @@ export default function StockMovementsExit({ products }: ExitProps) {
         post('/stock-movements');
     };
 
-    const selectedProduct = products.find(p => p.id === parseInt(data.product_id as string));
+    const selectedProduct = products.find(p => p.id === (typeof data.product_id === 'number' ? data.product_id : parseInt(data.product_id as string)));
 
     return (
         <div className="space-y-6">
@@ -68,21 +74,20 @@ export default function StockMovementsExit({ products }: ExitProps) {
                             {/* Producto */}
                             <div className="space-y-2">
                                 <Label htmlFor="product_id">Producto *</Label>
-                                <Select
-                                    value={data.product_id.toString()}
+                                <Combobox
+                                    options={products.map((p) => ({
+                                        value: p.id,
+                                        label: `${p.codigo} - ${p.nombre}`,
+                                    }))}
+                                    value={data.product_id || 0}
                                     onValueChange={(value) => setData('product_id', value)}
+                                    placeholder="Selecciona un producto"
                                 >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Selecciona un producto" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {products.map((product) => (
-                                            <SelectItem key={product.id} value={product.id.toString()}>
-                                                {product.codigo} - {product.nombre}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                    <ComboboxInput placeholder="Buscar producto..." />
+                                    <ComboboxContent>
+                                        <ComboboxItemsFiltered />
+                                    </ComboboxContent>
+                                </Combobox>
                                 {errors.product_id && (
                                     <p className="text-sm text-red-500">{errors.product_id}</p>
                                 )}
