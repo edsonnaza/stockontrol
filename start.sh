@@ -40,17 +40,18 @@ fi
 # Generate app key if needed
 php artisan key:generate --force 2>/dev/null || true
 
-# Clear any cached config and cache
-php artisan config:clear 2>/dev/null || true
-php artisan cache:clear 2>/dev/null || true
-
 # Run migrations
 echo "Running database migrations..."
 php artisan migrate --force 2>&1 || echo "Migration warning - continuing..."
 
+# Clear cache AFTER migrations (so config is loaded first)
+php artisan config:clear 2>/dev/null || true
+php artisan cache:clear 2>/dev/null || true
+
 # Seed database
 echo "Seeding database..."
-php artisan db:seed 2>&1 || echo "Seed warning - continuing..."
+php artisan db:seed 2>&1 | tee seed.log || echo "Seed warning - continuing...
+Check seed.log for details"
 
 # Cache config for production
 if [ "$APP_ENV" = "production" ]; then

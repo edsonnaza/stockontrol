@@ -15,17 +15,25 @@ class ForceHttps
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Force HTTPS in production
-        if (env('APP_ENV') === 'production' && !$request->secure()) {
-            // If we're behind a proxy that handles HTTPS, check the forwarded proto header
-            if ($request->header('X-Forwarded-Proto') === 'https') {
-                // Assume it's secure, proceed
-                return $next($request);
+        // In production, ensure the request is recognized as HTTPS
+        // when behind a proxy (like Railway)
+        if (env('APP_ENV') === 'production') {
+            // Check if we have HTTPS indicators from proxy
+            if ($request->header('X-Forwarded-Proto') === 'https' ||
+                $request->header('X-Forwarded-Ssl') === 'on' ||
+                $request->header('CF-Visitor') ||
+                $request->isSecure()) {
+                
+                // Force the request to be recognized as HTTPS
+                if (!$request->isSecure() && $request->header('X-Forwarded-Proto') === 'https') {
+                    // Set the scheme to https for Laravel's URL generation
+                    $_SERVER['HTTPS'] = 'on';
+                    $_SERVER['SERVER_PORT'] = 443;
+                }
             }
-            
-            return redirect()->secure($request->getRequestUri(), 301);
         }
 
         return $next($request);
     }
 }
+

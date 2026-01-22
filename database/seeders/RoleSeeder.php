@@ -14,9 +14,6 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Limpiar caché de roles y permisos
-        app()['cache']->forget('spatie.permission.cache');
-
         // Crear permisos
         $permissions = [
             // Productos
