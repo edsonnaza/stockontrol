@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockMovementController;
 
 Route::get('/', function () {
     return Inertia::render('welcome', [
@@ -21,15 +22,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Movimientos de Stock
     Route::prefix('stock-movements')->name('stock-movements.')->group(function () {
-        Route::get('/', function () {
-            return Inertia::render('stock-movements/index');
-        })->name('index');
-        Route::get('entry', function () {
-            return Inertia::render('stock-movements/entry');
-        })->name('entry');
-        Route::get('exit', function () {
-            return Inertia::render('stock-movements/exit');
-        })->name('exit');
+        Route::get('/', [StockMovementController::class, 'index'])->name('index');
+        Route::get('entry', [StockMovementController::class, 'entryForm'])->name('entry');
+        Route::get('exit', [StockMovementController::class, 'exitForm'])->name('exit');
+        Route::post('/', [StockMovementController::class, 'store'])->name('store');
+        Route::delete('{movement}', [StockMovementController::class, 'destroy'])->name('destroy');
     });
 
     // Stock / Alertas

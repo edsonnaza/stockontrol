@@ -2,10 +2,11 @@ import { Link, useForm } from '@inertiajs/react';
 import { ChevronLeft, Loader } from 'lucide-react';
 import type { FormEventHandler } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
 
 interface EditProps {
@@ -49,17 +50,14 @@ export default function ProductsEdit({ product, categories }: EditProps) {
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
                 </Link>
-                <h1 className="text-3xl font-bold">Editar Producto</h1>
+                <Heading
+                    title="Editar Producto"
+                    description="Actualiza los datos del producto"
+                />
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Información del Producto</CardTitle>
-                    <CardDescription>
-                        Actualiza los datos del producto
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
+                <CardContent className="pt-6">
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {/* Código */}

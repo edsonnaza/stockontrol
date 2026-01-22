@@ -1,4 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
+import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Link, router } from '@inertiajs/react';
@@ -11,7 +12,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface Product {
     id: number;
@@ -54,7 +55,10 @@ export default function ProductsIndex({ products }: IndexProps) {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold">Productos</h1>
+                <Heading
+                    title="Productos"
+                    description={`Total de ${products.total} producto(s)`}
+                />
                 <Link href="/products/create">
                     <Button>
                         <Plus className="mr-2 h-4 w-4" />
@@ -64,13 +68,7 @@ export default function ProductsIndex({ products }: IndexProps) {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Lista de Productos</CardTitle>
-                    <CardDescription>
-                        Total de {products.total} producto(s)
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
+                <CardContent className="pt-6">
                     {products.data.length === 0 ? (
                         <div className="text-center py-12">
                             <p className="text-muted-foreground mb-4">
@@ -156,6 +154,6 @@ export default function ProductsIndex({ products }: IndexProps) {
     );
 }
 
-ProductsIndex.layout = (page: any) => <AppLayout children={page} breadcrumbs={[
-    { label: 'Productos', href: '/products' }
+ProductsIndex.layout = (page: React.ReactNode) => <AppLayout children={page} breadcrumbs={[
+    { title: 'Productos', href: '/products' }
 ]} />;
