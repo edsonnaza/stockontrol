@@ -1,8 +1,10 @@
-# Laravel + React Starter Kit
+# StocKontrol
 
-## Introduction
+## Introducción
 
-Our React starter kit provides a robust, modern starting point for building Laravel applications with a React frontend using [Inertia](https://inertiajs.com).
+Sistema integral de gestión de inventario y control de stock construido con Laravel, React e Inertia.
+
+StocKontrol permite gestionar productos, registrar movimientos de entrada y salida de stock, visualizar análisis en tiempo real y mantener un control exhaustivo del inventario.
 
 Inertia allows you to build modern, single-page React applications using classic server-side routing and controllers. This lets you enjoy the frontend power of React combined with the incredible backend productivity of Laravel and lightning-fast Vite compilation.
 
