@@ -4,6 +4,21 @@ import { Button } from '@/components/ui/button';
 import { AlertCircle, Package, AlertTriangle, Boxes } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    BarChart,
+    Bar,
+    LineChart,
+    Line,
+    PieChart,
+    Pie,
+    Cell,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+} from 'recharts';
 
 interface StockStats {
     total_products: number;
@@ -12,34 +27,61 @@ interface StockStats {
     total_items: number;
 }
 
-interface IndexProps {
-    stats: StockStats;
+interface CategoryStockData {
+    name: string;
+    value: number;
 }
 
-export default function StockIndex({ stats }: IndexProps) {
-    const StatCard = ({ 
-        icon: Icon, 
-        title, 
-        value, 
-        description, 
-        color 
-    }: { 
-        icon: React.ComponentType<any>; 
-        title: string; 
-        value: number | string; 
+interface MovementData {
+    date: string;
+    Entradas: number;
+    Salidas: number;
+}
+
+interface LowStockProductData {
+    name: string;
+    actual: number;
+    minimo: number;
+}
+
+interface IndexProps {
+    stats: StockStats;
+    stockByCategory: CategoryStockData[];
+    recentMovements: MovementData[];
+    lowStockProducts: LowStockProductData[];
+}
+
+const COLORS = ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#8b5cf6', '#ec4899'];
+
+export default function StockIndex({
+    stats,
+    stockByCategory,
+    recentMovements,
+    lowStockProducts,
+}: IndexProps) {
+    const StatCard = ({
+        icon: Icon,
+        title,
+        value,
+        description,
+        color,
+    }: {
+        icon: React.ComponentType<any>;
+        title: string;
+        value: number | string;
         description: string;
         color: string;
     }) => (
         <Card>
             <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                     <Icon className={`h-4 w-4 ${color}`} />
                     {title}
                 </CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold">{value}</div>
-                <p className="text-xs text-muted-foreground mt-1">{description}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{description}</p>
             </CardContent>
         </Card>
     );
@@ -47,10 +89,7 @@ export default function StockIndex({ stats }: IndexProps) {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <Heading
-                    title="Stock Actual"
-                    description="Resumen general del inventario"
-                />
+                <Heading title="Dashboard" description="Resumen general del inventario" />
                 <Link href="/stock/low-stock">
                     <Button>
                         <AlertCircle className="mr-2 h-4 w-4" />
@@ -117,6 +156,93 @@ export default function StockIndex({ stats }: IndexProps) {
                 </CardContent>
             </Card>
 
+            {/* Gráficos */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                {/* Stock por Categoría */}
+                {stockByCategory && stockByCategory.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Stock Total por Categoría</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={stockByCategory}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="value" fill="#3b82f6" />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {/* Últimos Movimientos */}
+                {recentMovements && recentMovements.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Últimos Movimientos (7 días)</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <LineChart data={recentMovements}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis
+                                        dataKey="date"
+                                        tick={{ fontSize: 12 }}
+                                        angle={-45}
+                                        textAnchor="end"
+                                        height={60}
+                                    />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="Entradas"
+                                        stroke="#10b981"
+                                        strokeWidth={2}
+                                    />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="Salidas"
+                                        stroke="#ef4444"
+                                        strokeWidth={2}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                )}
+            </div>
+
+            {/* Productos con Bajo Stock */}
+            {lowStockProducts && lowStockProducts.length > 0 && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Productos con Bajo Stock (Top 5)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart
+                                data={lowStockProducts}
+                                layout="vertical"
+                                margin={{ top: 5, right: 30, left: 300 }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis type="number" />
+                                <YAxis dataKey="name" type="category" width={290} tick={{ fontSize: 12 }} />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="actual" fill="#ef4444" name="Stock Actual" />
+                                <Bar dataKey="minimo" fill="#f59e0b" name="Stock Mínimo" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </CardContent>
+                </Card>
+            )}
+
             {/* Alertas */}
             {stats.low_stock > 0 && (
                 <Card className="border-orange-200 bg-orange-50">
@@ -124,8 +250,9 @@ export default function StockIndex({ stats }: IndexProps) {
                         <CardTitle className="text-orange-900">⚠️ Productos con Bajo Stock</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sm text-orange-800 mb-4">
-                            Tienes <strong>{stats.low_stock}</strong> producto(s) con stock por debajo del mínimo establecido.
+                        <p className="mb-4 text-sm text-orange-800">
+                            Tienes <strong>{stats.low_stock}</strong> producto(s) con stock por debajo del mínimo
+                            establecido.
                         </p>
                         <Link href="/stock/low-stock">
                             <Button size="sm">Ver Detalles</Button>
@@ -140,7 +267,7 @@ export default function StockIndex({ stats }: IndexProps) {
                         <CardTitle className="text-red-900">🔴 Productos Sin Stock</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sm text-red-800 mb-4">
+                        <p className="mb-4 text-sm text-red-800">
                             <strong>{stats.no_stock}</strong> producto(s) están completamente agotados.
                         </p>
                         <Link href="/stock/low-stock">
@@ -153,6 +280,9 @@ export default function StockIndex({ stats }: IndexProps) {
     );
 }
 
-StockIndex.layout = (page: React.ReactNode) => <AppLayout children={page} breadcrumbs={[
-    { title: 'Stock', href: '/stock' }
-]} />;
+StockIndex.layout = (page: React.ReactNode) => (
+    <AppLayout
+        children={page}
+        breadcrumbs={[{ title: 'Stock', href: '/stock' }]}
+    />
+);
