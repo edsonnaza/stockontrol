@@ -15,5 +15,9 @@ php artisan config:cache
 php artisan migrate --force
 php artisan db:seed --force
 
+# Debug: Mostrar el puerto que se va a usar
+echo "PORT variable: $PORT"
+echo "Starting server on port: $PORT"
+
 # Iniciar la app con artisan serve (compatible con Nixpacks)
 php artisan serve --host=0.0.0.0 --port=$PORT
