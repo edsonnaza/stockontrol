@@ -7,6 +7,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 RUN apt-get update && apt-get install -y \
     git \
     curl \
+    netcat-openbsd \
     nodejs \
     libpng-dev \
     libjpeg-dev \
