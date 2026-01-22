@@ -13,14 +13,63 @@ import {
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Package, TrendingDown, AlertCircle } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Productos',
+        href: '/products',
+        icon: Package,
+        items: [
+            {
+                title: 'Listar Productos',
+                href: '/products',
+            },
+            {
+                title: 'Crear Producto',
+                href: '/products/create',
+            },
+        ],
+    },
+    {
+        title: 'Movimientos de Stock',
+        href: '/stock-movements',
+        icon: TrendingDown,
+        items: [
+            {
+                title: 'Registrar Entrada',
+                href: '/stock-movements/entry',
+            },
+            {
+                title: 'Registrar Salida',
+                href: '/stock-movements/exit',
+            },
+            {
+                title: 'Historial',
+                href: '/stock-movements',
+            },
+        ],
+    },
+    {
+        title: 'Stock',
+        href: '/stock',
+        icon: AlertCircle,
+        items: [
+            {
+                title: 'Stock Actual',
+                href: '/stock',
+            },
+            {
+                title: 'Bajo Stock',
+                href: '/stock/low-stock',
+            },
+        ],
     },
 ];
 
