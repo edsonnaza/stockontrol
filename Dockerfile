@@ -1,9 +1,13 @@
 FROM php:8.2-fpm
 
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
+    nodejs \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
