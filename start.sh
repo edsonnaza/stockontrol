@@ -25,6 +25,14 @@ while [ $attempt -le $max_attempts ]; do
     attempt=$((attempt + 1))
 done
 
+# Set APP_URL if not already set (Railway will provide RAILWAY_PUBLIC_DOMAIN)
+if [ -z "$APP_URL" ] || [ "$APP_URL" = "" ]; then
+    if [ ! -z "$RAILWAY_PUBLIC_DOMAIN" ]; then
+        export APP_URL="https://${RAILWAY_PUBLIC_DOMAIN}"
+        sed -i "" "s|^APP_URL=.*|APP_URL=https://${RAILWAY_PUBLIC_DOMAIN}|" .env
+    fi
+fi
+
 # Generate app key if needed
 php artisan key:generate --force 2>/dev/null || true
 
