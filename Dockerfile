@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     netcat-openbsd \
-    mysql-client \
+    mariadb-client-compat \
     nodejs \
     libpng-dev \
     libjpeg-dev \
