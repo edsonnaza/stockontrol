@@ -38,11 +38,7 @@ RUN chmod +x start.sh
 # Install PHP dependencies with platform override
 RUN composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-req=php
 
-# Copy .env.example to .env for build time
-RUN cp .env.example .env.build
-
-# Build assets (will use default localhost URL, but Vite should use relative paths)
-ENV APP_URL=http://localhost
+# Build assets
 RUN npm ci && npm run build
 
 # Run migrations
