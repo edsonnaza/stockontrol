@@ -13,12 +13,20 @@ fi
 echo "Configuring database connection..."
 
 # Railway provides these variables
-# Use RAILWAY_PRIVATE_DOMAIN for internal communication (inside Railway)
+# RAILWAY_PRIVATE_DOMAIN for internal communication
+# RAILWAY_TCP_PROXY_DOMAIN as fallback
 DB_HOST="${MYSQLHOST:-${RAILWAY_PRIVATE_DOMAIN}}"
 DB_PORT="${MYSQLPORT:-3306}"
 DB_NAME="${MYSQLDATABASE:-railway}"
 DB_USER="${MYSQLUSER:-root}"
 DB_PASS="${MYSQLPASSWORD:-}"
+
+# If primary host is not set, try TCP proxy
+if [ -z "$DB_HOST" ] && [ ! -z "$RAILWAY_TCP_PROXY_DOMAIN" ]; then
+    DB_HOST="$RAILWAY_TCP_PROXY_DOMAIN"
+    DB_PORT="${RAILWAY_TCP_PROXY_PORT:-3306}"
+    echo "Using Railway TCP Proxy for database connection"
+fi
 
 echo "Database settings:"
 echo "  Host: $DB_HOST"
