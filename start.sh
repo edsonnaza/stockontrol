@@ -137,10 +137,12 @@ Check seed.log for details"
 
 # Cache config for production
 if [ "$APP_ENV" = "production" ]; then
+    echo "Caching configuration for production..."
     php artisan config:cache 2>/dev/null || true
 fi
 
-# Start the application
-echo "Starting application on port ${PORT:-8000}..."
-php -S 0.0.0.0:${PORT:-8000} -t public/ -d display_errors=1
+echo ""
+echo "✓ StocKontrol is ready!"
+echo "Database migrations and seeding completed."
+echo "Railway will now start the application with nginx + php-fpm..."
 
