@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockMovementController;
+use App\Http\Controllers\StockController;
 
 Route::get('/', function () {
     return Inertia::render('welcome', [
@@ -31,12 +32,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Stock / Alertas
     Route::prefix('stock')->name('stock.')->group(function () {
-        Route::get('/', function () {
-            return Inertia::render('stock/index');
-        })->name('index');
-        Route::get('low-stock', function () {
-            return Inertia::render('stock/low-stock');
-        })->name('low-stock');
+        Route::get('/', [StockController::class, 'index'])->name('index');
+        Route::get('low-stock', [StockController::class, 'lowStock'])->name('low-stock');
     });
 });
 
