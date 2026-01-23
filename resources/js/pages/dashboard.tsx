@@ -153,7 +153,7 @@ export default function Dashboard({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="space-y-6">
+            <div className="space-y-6 px-4">
                 {/* Hero Section */}
                 <div className="rounded-lg border-2 border-blue-200 bg-linear-to-r from-blue-50 to-indigo-50 p-8">
                     <Heading

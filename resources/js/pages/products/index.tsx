@@ -1,8 +1,9 @@
-import AppLayout from '@/layouts/app-layout';
-import Heading from '@/components/heading';
-import { Button } from '@/components/ui/button';
-import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Link, router } from '@inertiajs/react';
+import { Plus, Edit, Trash2 } from 'lucide-react';
+import Heading from '@/components/heading';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
     Table,
     TableBody,
@@ -11,8 +12,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import AppLayout from '@/layouts/app-layout';
 
 interface Product {
     id: number;
@@ -53,15 +53,15 @@ export default function ProductsIndex({ products }: IndexProps) {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
+        <div className="space-y-1 px-4">
+            <div className="flex items-center justify-between ml-2 pt-4">
                 <Heading
-                    title="Productos"
+                    title="List de Productos Disponibles"
                     description={`Total de ${products.total} producto(s)`}
                 />
                 <Link href="/products/create">
                     <Button>
-                        <Plus className="mr-2 h-4 w-4" />
+                        <Plus className="mr-2 h-4 w-4 " />
                         Crear Producto
                     </Button>
                 </Link>

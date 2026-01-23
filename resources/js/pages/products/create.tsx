@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
 
 interface CreateProps {
@@ -33,17 +32,17 @@ export default function ProductsCreate({ categories }: CreateProps) {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center gap-4">
-                <Link href="/products">
-                    <Button variant="outline" size="icon">
-                        <ChevronLeft className="h-4 w-4" />
+        <div className="space-y-4 px-4">
+            <div className="flex items-start gap-4 pt-4">
+                <Link href="/products"  >
+                    <Button variant="outline" size="icon" >
+                        <ChevronLeft className="h-4 w-6" />
                     </Button>
                 </Link>
-                <Heading
-                    title="Crear Producto"
-                    description="Completa los datos del nuevo producto"
-                />
+                <div className="flex flex-col">
+                    <h1 className="text-1xl font-bold tracking-tight">Crear Producto</h1>
+                    <p className="text-sm text-muted-foreground">Completa los datos del nuevo producto</p>
+                </div>
             </div>
 
             <Card>
