@@ -7,17 +7,5 @@ if [ ! -z "$RAILWAY_PUBLIC_DOMAIN" ]; then
     export ASSET_URL="https://${RAILWAY_PUBLIC_DOMAIN}"
 fi
 
-# Limpiar y cachear configuración
-php artisan config:clear
-php artisan config:cache
-
-# Ejecutar migraciones y seeders en cada reinicio
-php artisan migrate --force
-php artisan db:seed --force
-
-# Debug: Mostrar el puerto que se va a usar
-echo "PORT variable: $PORT"
-echo "Starting server on port: $PORT"
-
 # Iniciar la app con artisan serve (compatible con Nixpacks)
 php artisan serve --host=0.0.0.0 --port=$PORT
