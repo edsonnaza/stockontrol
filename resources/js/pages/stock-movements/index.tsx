@@ -1,8 +1,9 @@
-import AppLayout from '@/layouts/app-layout';
-import Heading from '@/components/heading';
-import { Button } from '@/components/ui/button';
-import { Plus, Trash2 } from 'lucide-react';
 import { Link, router } from '@inertiajs/react';
+import { Plus, Trash2, Minus } from 'lucide-react';
+import Heading from '@/components/heading';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
     Table,
     TableBody,
@@ -11,8 +12,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import AppLayout from '@/layouts/app-layout';
 
 interface Movement {
     id: number;
@@ -68,24 +68,24 @@ export default function StockMovementsIndex({ movements }: IndexProps) {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
+        <div className="space-y-6 px-4">
+            <div className="flex items-center justify-between mt-2">
                 <Heading
                     title="Movimientos de Stock"
                     description={`Total de ${movements.total} movimiento(s)`}
                 />
             </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-center">
                 <Link href="/stock-movements/entry">
-                    <Button className="w-full">
-                        <Plus className="mr-2 h-4 w-4" />
+                    <Button className="w-1/2 bg-green-600 text-white hover:bg-green-700">
+                        <Plus className=" h-4 w-4" />
                         Registrar Entrada
                     </Button>
                 </Link>
-                <Link href="/stock-movements/exit">
-                    <Button className="w-full">
-                        <Plus className="mr-2 h-4 w-4" />
+                <Link href="/stock-movements/exit" className='items-end justify-end flex'>
+                    <Button className="w-1/2 bg-red-600 text-white hover:bg-red-700">
+                        <Minus className=" h-4 w-4" />
                         Registrar Salida
                     </Button>
                 </Link>

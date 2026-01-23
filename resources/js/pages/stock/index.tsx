@@ -1,17 +1,10 @@
-import AppLayout from '@/layouts/app-layout';
-import Heading from '@/components/heading';
-import { Button } from '@/components/ui/button';
-import { AlertCircle, Package, AlertTriangle, Boxes } from 'lucide-react';
 import { Link } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertCircle, Package, AlertTriangle, Boxes } from 'lucide-react';
 import {
     BarChart,
     Bar,
     LineChart,
     Line,
-    PieChart,
-    Pie,
-    Cell,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -19,6 +12,10 @@ import {
     Legend,
     ResponsiveContainer,
 } from 'recharts';
+import Heading from '@/components/heading';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import AppLayout from '@/layouts/app-layout';
 
 interface StockStats {
     total_products: number;
@@ -51,7 +48,32 @@ interface IndexProps {
     lowStockProducts: LowStockProductData[];
 }
 
-const COLORS = ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#8b5cf6', '#ec4899'];
+const StatCard = ({
+    icon: Icon,
+    title,
+    value,
+    description,
+    color,
+}: {
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    title: string;
+    value: number | string;
+    description: string;
+    color: string;
+}) => (
+    <Card>
+        <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <Icon className={`h-4 w-4 ${color}`} />
+                {title}
+            </CardTitle>
+        </CardHeader>
+        <CardContent>
+            <div className="text-2xl font-bold">{value}</div>
+            <p className="mt-1 text-xs text-muted-foreground">{description}</p>
+        </CardContent>
+    </Card>
+);
 
 export default function StockIndex({
     stats,
@@ -59,37 +81,10 @@ export default function StockIndex({
     recentMovements,
     lowStockProducts,
 }: IndexProps) {
-    const StatCard = ({
-        icon: Icon,
-        title,
-        value,
-        description,
-        color,
-    }: {
-        icon: React.ComponentType<any>;
-        title: string;
-        value: number | string;
-        description: string;
-        color: string;
-    }) => (
-        <Card>
-            <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                    <Icon className={`h-4 w-4 ${color}`} />
-                    {title}
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="text-2xl font-bold">{value}</div>
-                <p className="mt-1 text-xs text-muted-foreground">{description}</p>
-            </CardContent>
-        </Card>
-    );
-
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <Heading title="Dashboard" description="Resumen general del inventario" />
+        <div className="space-y-6 px-4">
+            <div className="flex items-center justify-between mt-4">
+                <Heading title="Dashboard" description="Resumen general del inventario" variant='small' />
                 <Link href="/stock/low-stock">
                     <Button>
                         <AlertCircle className="mr-2 h-4 w-4" />

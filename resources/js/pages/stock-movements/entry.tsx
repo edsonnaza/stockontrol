@@ -1,6 +1,7 @@
 import { Link, useForm } from '@inertiajs/react';
 import { ChevronLeft, Loader } from 'lucide-react';
 import type { FormEventHandler } from 'react';
+import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -12,7 +13,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
 
 interface Product {
@@ -54,8 +54,8 @@ export default function StockMovementsEntry({ products }: EntryProps) {
     const selectedProduct = products.find(p => p.id === (typeof data.product_id === 'number' ? data.product_id : parseInt(data.product_id as string)));
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center gap-4">
+        <div className="space-y-6 px-4">
+            <div className="flex items-center gap-4 mt-4">
                 <Link href="/stock-movements">
                     <Button variant="outline" size="icon">
                         <ChevronLeft className="h-4 w-4" />
@@ -64,6 +64,7 @@ export default function StockMovementsEntry({ products }: EntryProps) {
                 <Heading
                     title="Registrar Entrada de Stock"
                     description="Registra la entrada de productos al inventario"
+                    variant='small'
                 />
             </div>
 
@@ -80,7 +81,7 @@ export default function StockMovementsEntry({ products }: EntryProps) {
                                         label: `${p.codigo} - ${p.nombre}`,
                                     }))}
                                     value={data.product_id || 0}
-                                    onValueChange={(value) => setData('product_id', value)}
+                                    onValueChange={(value) => setData('product_id', typeof value === 'number' ? value : parseInt(value as string))}
                                     placeholder="Selecciona un producto"
                                 >
                                     <ComboboxInput placeholder="Buscar producto..." />
@@ -170,7 +171,7 @@ export default function StockMovementsEntry({ products }: EntryProps) {
                         {selectedProduct && data.cantidad && (
                             <div className="rounded-lg bg-blue-50 p-4 border border-blue-200">
                                 <p className="text-sm">
-                                    <span className="font-semibold">Resumen:</span> El stock actual de <strong>{selectedProduct.nombre}</strong> aumentará de <strong>{selectedProduct.stock_actual}</strong> a <strong>{selectedProduct.stock_actual + parseInt(data.cantidad as string)}</strong> unidades.
+                                    <span className="font-semibold">Resumen:</span> El stock actual de <strong>{selectedProduct.nombre}</strong> aumentará de <strong>{selectedProduct.stock_actual}</strong> a <strong>{selectedProduct.stock_actual + parseInt(data.cantidad as unknown as string)}</strong> unidades.
                                 </p>
                             </div>
                         )}

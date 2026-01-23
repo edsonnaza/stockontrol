@@ -1,6 +1,7 @@
 import { Link, useForm } from '@inertiajs/react';
 import { ChevronLeft, Loader } from 'lucide-react';
 import type { FormEventHandler } from 'react';
+import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -12,7 +13,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
 
 interface Product {
@@ -54,7 +54,7 @@ export default function StockMovementsExit({ products }: ExitProps) {
     const selectedProduct = products.find(p => p.id === (typeof data.product_id === 'number' ? data.product_id : parseInt(data.product_id as string)));
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 px-4">
             <div className="flex items-center gap-4">
                 <Link href="/stock-movements">
                     <Button variant="outline" size="icon">
@@ -64,6 +64,7 @@ export default function StockMovementsExit({ products }: ExitProps) {
                 <Heading
                     title="Registrar Salida de Stock"
                     description="Registra la salida de productos del inventario"
+                    variant='small'
                 />
             </div>
 
@@ -80,7 +81,7 @@ export default function StockMovementsExit({ products }: ExitProps) {
                                         label: `${p.codigo} - ${p.nombre}`,
                                     }))}
                                     value={data.product_id || 0}
-                                    onValueChange={(value) => setData('product_id', value)}
+                                    onValueChange={(value) => setData('product_id', typeof value === 'string' ? parseInt(value) : value)}
                                     placeholder="Selecciona un producto"
                                 >
                                     <ComboboxInput placeholder="Buscar producto..." />
@@ -124,7 +125,7 @@ export default function StockMovementsExit({ products }: ExitProps) {
                                 {errors.cantidad && (
                                     <p className="text-sm text-red-500">{errors.cantidad}</p>
                                 )}
-                                {selectedProduct && parseInt(data.cantidad as string) > selectedProduct.stock_actual && (
+                                {selectedProduct && parseInt(data.cantidad as unknown as string) > selectedProduct.stock_actual && (
                                     <p className="text-sm text-orange-600">
                                         ⚠️ La cantidad supera el stock disponible
                                     </p>
