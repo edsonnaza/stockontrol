@@ -240,7 +240,7 @@ export default function StockIndex({
 
             {/* Alertas */}
             {stats.low_stock > 0 && (
-                <Card className="border-orange-200 bg-orange-50">
+                <Card className="border-orange-200 bg-orange-50 mb-10">
                     <CardHeader>
                         <CardTitle className="text-orange-900">⚠️ Productos con Bajo Stock</CardTitle>
                     </CardHeader>

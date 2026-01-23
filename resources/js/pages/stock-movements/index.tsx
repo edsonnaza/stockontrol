@@ -86,7 +86,7 @@ export default function StockMovementsIndex({ movements }: IndexProps) {
     };
 
     return (
-        <div className="space-y-6 px-4">
+        <div className="space-y-6 px-4 mb-10">
             <div className="flex items-center justify-between mt-2">
                 <Heading
                     title="Movimientos de Stock"
