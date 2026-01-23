@@ -1,5 +1,6 @@
 import { Link, router } from '@inertiajs/react';
 import { Plus, Edit, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { useConfirm } from '@/contexts/confirm-context';
 import AppLayout from '@/layouts/app-layout';
 
 interface Product {
@@ -36,9 +38,25 @@ interface IndexProps {
 }
 
 export default function ProductsIndex({ products }: IndexProps) {
-    const handleDelete = (id: number) => {
-        if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-            router.delete(`/products/${id}`);
+    const { confirm } = useConfirm();
+
+    const handleDelete = async (id: number) => {
+        const result = await confirm({
+            title: '¿Eliminar producto?',
+            description: 'Esta acción no se puede deshacer. El producto será eliminado permanentemente.',
+            confirmText: 'Eliminar',
+            cancelText: 'Cancelar',
+        });
+
+        if (result) {
+            router.delete(`/products/${id}`, {
+                onSuccess: () => {
+                    toast.success('Producto eliminado correctamente');
+                },
+                onError: () => {
+                    toast.error('Error al eliminar el producto');
+                },
+            });
         }
     };
 
@@ -133,10 +151,9 @@ export default function ProductsIndex({ products }: IndexProps) {
                                                         </Button>
                                                     </Link>
                                                     <Button
-                                                        variant="outline"
+                                                        variant="delete"
                                                         size="icon"
                                                         onClick={() => handleDelete(product.id)}
-                                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                                     >
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>

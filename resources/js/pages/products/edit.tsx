@@ -1,6 +1,7 @@
 import { Link, useForm } from '@inertiajs/react';
 import { ChevronLeft, Loader } from 'lucide-react';
 import type { FormEventHandler } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -38,7 +39,14 @@ export default function ProductsEdit({ product, categories }: EditProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        put(`/products/${product.id}`);
+        put(`/products/${product.id}`, {
+            onSuccess: () => {
+                toast.success('Producto actualizado correctamente');
+            },
+            onError: () => {
+                toast.error('Error al actualizar el producto');
+            },
+        });
     };
 
     return (
@@ -167,7 +175,7 @@ export default function ProductsEdit({ product, categories }: EditProps) {
                             <Link href="/products">
                                 <Button variant="outline">Cancelar</Button>
                             </Link>
-                            <Button type="submit" disabled={processing}>
+                            <Button type="submit" variant="save" disabled={processing}>
                                 {processing ? (
                                     <>
                                         <Loader className="mr-2 h-4 w-4 animate-spin" />

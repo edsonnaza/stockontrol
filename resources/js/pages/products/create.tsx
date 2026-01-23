@@ -1,6 +1,7 @@
 import { Link, useForm } from '@inertiajs/react';
 import { ChevronLeft, Loader } from 'lucide-react';
 import type { FormEventHandler } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -28,7 +29,14 @@ export default function ProductsCreate({ categories }: CreateProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post('/products');
+        post('/products', {
+            onSuccess: () => {
+                toast.success('Producto creado correctamente');
+            },
+            onError: () => {
+                toast.error('Error al crear el producto');
+            },
+        });
     };
 
     return (
@@ -158,7 +166,7 @@ export default function ProductsCreate({ categories }: CreateProps) {
                             <Link href="/products">
                                 <Button variant="outline">Cancelar</Button>
                             </Link>
-                            <Button type="submit" disabled={processing}>
+                            <Button type="submit" variant="save" disabled={processing}>
                                 {processing ? (
                                     <>
                                         <Loader className="mr-2 h-4 w-4 animate-spin" />

@@ -1,5 +1,6 @@
 import { Link, router } from '@inertiajs/react';
 import { Plus, Trash2, Minus } from 'lucide-react';
+import { toast } from 'sonner';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { useConfirm } from '@/contexts/confirm-context';
 import AppLayout from '@/layouts/app-layout';
 
 interface Movement {
@@ -40,9 +42,25 @@ interface IndexProps {
 }
 
 export default function StockMovementsIndex({ movements }: IndexProps) {
-    const handleDelete = (id: number) => {
-        if (confirm('¿Estás seguro de que deseas eliminar este movimiento?')) {
-            router.delete(`/stock-movements/${id}`);
+    const { confirm } = useConfirm();
+
+    const handleDelete = async (id: number) => {
+        const result = await confirm({
+            title: '¿Eliminar movimiento?',
+            description: 'Esta acción no se puede deshacer. El movimiento será eliminado permanentemente.',
+            confirmText: 'Eliminar',
+            cancelText: 'Cancelar',
+        });
+
+        if (result) {
+            router.delete(`/stock-movements/${id}`, {
+                onSuccess: () => {
+                    toast.success('Movimiento eliminado correctamente');
+                },
+                onError: () => {
+                    toast.error('Error al eliminar el movimiento');
+                },
+            });
         }
     };
 
@@ -140,10 +158,9 @@ export default function StockMovementsIndex({ movements }: IndexProps) {
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <Button
-                                                variant="outline"
+                                                variant="delete"
                                                 size="icon"
                                                 onClick={() => handleDelete(movement.id)}
-                                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
